@@ -2,6 +2,9 @@
 
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Add Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     * {
         margin: 0;
@@ -268,16 +271,14 @@
         opacity: 1;
     }
 
-    .category-img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 12px;
+    .category-icon {
+        font-size: 3rem;
+        color: var(--accent);
         margin-bottom: 1.5rem;
         transition: transform 0.3s ease;
     }
 
-    .category-card:hover .category-img {
+    .category-card:hover .category-icon {
         transform: scale(1.1);
     }
 
@@ -285,6 +286,12 @@
         font-size: 1.25rem;
         color: var(--primary);
         margin-bottom: 1rem;
+    }
+
+    .category-card p {
+        color: var(--secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
     }
 
     /* Featured Services Section */
@@ -310,44 +317,24 @@
     }
 
     .service-card {
-        background: var(--surface);
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: var(--shadow-md);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-    }
-
-    .service-card::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--accent), #D90429);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        display: block;
     }
 
     .service-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-xl);
+        text-decoration: none;
+        color: inherit;
     }
 
-    .service-card:hover::after {
-        opacity: 1;
-    }
-
-    .service-card img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .service-card:hover img {
-        transform: scale(1.08);
+    .service-image-container {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, rgba(239, 35, 60, 0.1), rgba(239, 35, 60, 0.05));
+        border-radius: 16px 16px 0 0;
     }
 
     .service-content {
@@ -500,6 +487,113 @@
             width: 100%;
         }
     }
+
+    .service-card {
+        cursor: pointer;
+    }
+
+    .service-details-modal .modal-content {
+        border-radius: 1rem;
+        border: none;
+    }
+
+    .service-details-modal .modal-header {
+        border-bottom: none;
+        padding: 2rem 2rem 1rem;
+    }
+
+    .service-details-modal .modal-body {
+        padding: 1rem 2rem 2rem;
+    }
+
+    .service-details-modal .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .service-details-icon {
+        font-size: 3rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+    }
+
+    .service-details-category {
+        background: rgba(239, 35, 60, 0.1);
+        color: var(--accent);
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 500;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+
+    .service-details-price {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .service-details-description {
+        color: var(--secondary);
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-details-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-details-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--secondary);
+    }
+
+    .service-details-meta-item i {
+        color: var(--accent);
+    }
+
+    .service-details-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .service-details-btn {
+        flex: 1;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .service-details-btn.primary {
+        background: var(--accent);
+        color: var(--surface);
+    }
+
+    .service-details-btn.secondary {
+        background: var(--background);
+        color: var(--primary);
+    }
+
+    .service-details-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .service-details-btn.primary:hover {
+        background: #D90429;
+    }
+
+    .service-details-btn.secondary:hover {
+        background: var(--border);
+    }
 </style>
 @endpush
 
@@ -532,46 +626,38 @@
 <section class="categories" id ="categories">
     <h2 class="categories-title">Explore Our Categories</h2>
     <div class="categories-grid">
+        @foreach($categories as $category)
         <div class="category-card">
-            <img src="{{ asset('/images/meal.png') }}" alt="Healthy Eating" class="category-img">
-            <h3>Healthy Eating</h3>
+            <i class="{{ $category->icon }} category-icon"></i>
+            <h3>{{ $category->name }}</h3>
+            <p>{{ $category->description }}</p>
         </div>
-        <div class="category-card">
-            <img src="{{ asset('/images/yoga.png') }}" alt="Fitness & Wellness" class="category-img">
-            <h3>Fitness & Wellness</h3>
-        </div>
-        <div class="category-card">
-            <img src="{{ asset('/images/gardening.png') }}" alt="Sustainable Living" class="category-img">
-            <h3>Sustainable Living</h3>
-        </div>
-        <div class="category-card">
-            <img src="{{ asset('/images/forest.png') }}" alt="Nature Connection" class="category-img">
-            <h3>Nature Connection</h3>
-        </div>
+        @endforeach
     </div>
 </section>
 
 <section class="about-section"  id="about-section">
     <h2>About Us</h2>
     <p>Healthy Habitat Network is dedicated to promoting wellness and sustainability. We connect individuals with quality services and products that foster a healthier, more sustainable lifestyle. Join our community and start your wellness journey today.</p>
-    <div class="search-bar">
-        <input type="text" class="search-input" placeholder="Search for services or products...">
-        <button class="search-btn">Search</button>
-    </div>
 </section>
 
 <section id="services" class="featured-services">
     <h2>Featured Services</h2>
     <div class="services-grid">
-        @foreach($services as $service)
-        <div class="service-card">
-            <img src="{{ asset('images/' . $service->icon) }}" alt="{{ $service->name }}">
-            <div class="service-content">
-                <h3>{{ $service->name }}</h3>
-                <p>{{ $service->description }}</p>
-                <div class="rating">★★★★★</div>
+        @foreach($featuredServices as $service)
+        <a href="{{ route('service.details', $service) }}" class="service-card">
+            <div class="service-image-container">
+                <i class="{{ $service->category->icon }} service-icon"></i>
             </div>
-        </div>
+            <div class="service-content">
+                <h3 class="service-title">{{ $service->name }}</h3>
+                <p class="service-description">{{ Str::limit($service->description, 100) }}</p>
+                <div class="service-meta">
+                    <span class="service-category">{{ $service->category->name }}</span>
+                    <span class="service-price">${{ number_format($service->price, 2) }}</span>
+                </div>
+            </div>
+        </a>
         @endforeach
     </div>
 </section>
@@ -581,10 +667,48 @@
 
 <!-- Include necessary scripts -->
 <script src="{{ asset('js/auth-modals.js') }}"></script>
+
+<!-- Service Details Modal -->
+<div class="modal fade service-details-modal" id="serviceDetailsModal" tabindex="-1" aria-labelledby="serviceDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceDetailsModalLabel">Service Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fas fa-leaf service-details-icon"></i>
+                    <h3 class="service-details-title mb-2">Service Name</h3>
+                    <span class="service-details-category">Category</span>
+                    <div class="service-details-price">$0.00</div>
+                </div>
+                <p class="service-details-description">Service description goes here.</p>
+                <div class="service-details-meta">
+                    <div class="service-details-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Duration: 60 min</span>
+                    </div>
+                    <div class="service-details-meta-item">
+                        <i class="fas fa-star"></i>
+                        <span>4.5 (120 reviews)</span>
+                    </div>
+                </div>
+                <div class="service-details-actions">
+                    <a href="#" class="service-details-btn primary">Book Now</a>
+                    <a href="#" class="service-details-btn secondary">View Provider</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/auth-modals.js') }}"></script>
+<!-- Add Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
 <script>
 function handleLogout() {
     // Create a form and submit it to handle the logout
@@ -605,6 +729,40 @@ function handleLogout() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap modal
+    const serviceDetailsModal = new bootstrap.Modal(document.getElementById('serviceDetailsModal'));
+
+    // Get all service cards
+    const serviceCards = document.querySelectorAll('.service-card');
+
+    // Add click event to each service card
+    serviceCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const serviceId = this.dataset.serviceId;
+            const serviceName = this.querySelector('.service-title').textContent;
+            const serviceDescription = this.querySelector('.service-description').textContent;
+            const serviceCategory = this.querySelector('.service-category').textContent;
+            const servicePrice = this.querySelector('.service-price').textContent;
+            const serviceIcon = this.querySelector('.service-icon').className;
+
+            // Update modal content
+            document.querySelector('.service-details-icon').className = serviceIcon;
+            document.querySelector('.service-details-title').textContent = serviceName;
+            document.querySelector('.service-details-category').textContent = serviceCategory;
+            document.querySelector('.service-details-price').textContent = servicePrice;
+            document.querySelector('.service-details-description').textContent = serviceDescription;
+
+            // Update action buttons
+            const bookNowBtn = document.querySelector('.service-details-btn.primary');
+            const viewProviderBtn = document.querySelector('.service-details-btn.secondary');
+            bookNowBtn.href = `/services/${serviceId}/book`;
+            viewProviderBtn.href = `/services/${serviceId}`;
+
+            // Show modal
+            serviceDetailsModal.show();
+        });
+    });
+
     // Smooth scrolling for all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

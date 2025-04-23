@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Service;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -14,9 +15,16 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Get featured services to display on the welcome page
-        $services = Service::all()->take(3); // Get first 3 services as featured
-        return view('welcome', compact('services'));
+        // Get all categories
+        $categories = Category::all();
+        
+        // Get featured services with their categories
+        $featuredServices = Service::with('category')
+            ->where('status', 'active')
+            ->take(3)
+            ->get();
+            
+        return view('welcome', compact('categories', 'featuredServices'));
     }
 
     /**
@@ -36,9 +44,15 @@ class HomeController extends Controller
      */
     public function services()
     {
-        // Get services with pagination (6 per page)
-        $services = Service::paginate(6);
-        return view('services', compact('services'));
+        // Get all categories for the filter
+        $categories = Category::all();
+        
+        // Get services with pagination and eager load categories
+        $services = Service::with('category')
+            ->where('status', 'active')
+            ->paginate(6);
+            
+        return view('services', compact('services', 'categories'));
     }
 
     /**

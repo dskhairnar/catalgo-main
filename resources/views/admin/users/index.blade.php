@@ -11,6 +11,18 @@
                 </div>
 
                 <div class="card-body">
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="input-group">
@@ -61,7 +73,7 @@
                                     <td>
                                         <div class="btn-group">
                                             <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $user->id }})">Delete</button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}')">Delete</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -84,15 +96,15 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete this user? This action cannot be undone.
+                Are you sure you want to delete user <span id="userName"></span>?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -106,16 +118,14 @@
     </div>
 </div>
 
-@push('scripts')
 <script>
-function confirmDelete(userId) {
+function confirmDelete(userId, userName) {
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    const form = document.getElementById('deleteForm');
-    form.action = `/admin/users/${userId}`;
+    document.getElementById('userName').textContent = userName;
+    document.getElementById('deleteForm').action = `/admin/users/${userId}`;
     modal.show();
 }
 </script>
-@endpush
 
 <style>
     .badge {

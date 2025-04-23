@@ -8,14 +8,16 @@ class Booking extends Model
 {
     protected $fillable = [
         'user_id',
-        'listing_id',
+        'service_id',
         'booking_date',
+        'booking_time',
         'status',
         'notes'
     ];
 
     protected $casts = [
-        'booking_date' => 'datetime'
+        'booking_date' => 'datetime',
+        'booking_time' => 'datetime'
     ];
 
     public function user()
@@ -23,9 +25,9 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function listing()
+    public function service()
     {
-        return $this->belongsTo(Listing::class);
+        return $this->belongsTo(Service::class);
     }
 
     public function scopeMonthly($query)

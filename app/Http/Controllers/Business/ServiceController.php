@@ -33,6 +33,17 @@ class ServiceController extends Controller
         $categories = Category::all();
         return view('business.services.index', compact('services', 'categories'));
     }
+
+    /**
+     * Show the form for creating a new service.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $categories = Category::all();
+        return view('business.services.create', compact('categories'));
+    }
     
     /**
      * Store a newly created service in storage.
@@ -45,7 +56,7 @@ class ServiceController extends Controller
         $user = Auth::user();
         
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
@@ -63,5 +74,57 @@ class ServiceController extends Controller
         $service->save();
         
         return redirect()->route('business.services')->with('success', 'Service added successfully!');
+    }
+
+    /**
+     * Show the form for editing the specified service.
+     *
+     * @param  \App\Models\Service  $service
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Service $service)
+    {
+        $this->authorize('update', $service);
+        $categories = Category::all();
+        return view('business.services.edit', compact('service', 'categories'));
+    }
+
+    /**
+     * Update the specified service in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Service  $service
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Service $service)
+    {
+        $this->authorize('update', $service);
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|string|in:yoga.png,meal.png,gardening.png,forest.png',
+        ]);
+        
+        $service->update($validated);
+        
+        return redirect()->route('business.services')->with('success', 'Service updated successfully!');
+    }
+
+    /**
+     * Remove the specified service from storage.
+     *
+     * @param  \App\Models\Service  $service
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Service $service)
+    {
+        $this->authorize('delete', $service);
+        
+        $service->delete();
+        
+        return redirect()->route('business.services')->with('success', 'Service deleted successfully!');
     }
 }

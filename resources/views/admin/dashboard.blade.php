@@ -135,29 +135,31 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <h6>Main Categories</h6>
+                                            <h6>Categories</h6>
                                             <ul class="list-group">
-                                                @foreach(\App\Models\Category::whereNull('parent_id')->take(5)->get() as $category)
+                                                @foreach(\App\Models\Category::take(5)->get() as $category)
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    {{ $category->name }}
-                                                    <span class="badge bg-primary rounded-pill">{{ $category->services_count ?? 0 }} services</span>
+                                                    <div>
+                                                        <i class="{{ $category->icon }}"></i>
+                                                        {{ $category->name }}
+                                                    </div>
+                                                    <span class="badge bg-primary rounded-pill">{{ $category->services()->count() }} services</span>
                                                 </li>
                                                 @endforeach
                                             </ul>
                                         </div>
                                         <div class="col-md-6">
                                             <h6>Quick Add Category</h6>
-                                            <form>
+                                            <form action="{{ route('admin.categories.store') }}" method="POST">
+                                                @csrf
                                                 <div class="mb-3">
-                                                    <input type="text" class="form-control" placeholder="Category name">
+                                                    <input type="text" name="name" class="form-control" placeholder="Category name" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <select class="form-select">
-                                                        <option selected>No parent (main category)</option>
-                                                        @foreach(\App\Models\Category::whereNull('parent_id')->get() as $category)
-                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    <input type="text" name="description" class="form-control" placeholder="Category description" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <input type="text" name="icon" class="form-control" placeholder="Icon class (e.g. fas fa-leaf)" required>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Add Category</button>
                                             </form>

@@ -32,6 +32,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th>Icon</th>
                                     <th>Service Name</th>
                                     <th>Category</th>
                                     <th>Price</th>
@@ -41,56 +42,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Example service entries - replace with actual data -->
+                                @forelse($services as $service)
                                 <tr>
-                                    <td>Eco-friendly Consultation</td>
-                                    <td>Sustainability</td>
-                                    <td>$75.00</td>
-                                    <td><span class="badge bg-success">Active</span></td>
-                                    <td>Mar 15, 2024</td>
+                                    <td>
+                                        <div class="service-icon-container">
+                                            <i class="{{ $service->category->icon }} service-icon"></i>
+                                        </div>
+                                    </td>
+                                    <td>{{ $service->name }}</td>
+                                    <td>{{ $service->category->name }}</td>
+                                    <td>${{ number_format($service->price, 2) }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $service->is_active ? 'success' : 'secondary' }}">
+                                            {{ $service->is_active ? 'Active' : 'Inactive' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $service->created_at->format('M d, Y') }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
-                                            <a href="#" class="btn btn-sm btn-outline-danger">Deactivate</a>
+                                            <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editServiceModal{{ $service->id }}">Edit</a>
+                                            <form action="{{ route('business.services.destroy', $service->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this service?')">Delete</button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
+                                @empty
                                 <tr>
-                                    <td>Organic Meal Planning</td>
-                                    <td>Nutrition</td>
-                                    <td>$50.00</td>
-                                    <td><span class="badge bg-success">Active</span></td>
-                                    <td>Mar 10, 2024</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
-                                            <a href="#" class="btn btn-sm btn-outline-danger">Deactivate</a>
-                                        </div>
-                                    </td>
+                                    <td colspan="7" class="text-center">No services found</td>
                                 </tr>
-                                <tr>
-                                    <td>Wellness Workshop</td>
-                                    <td>Health & Wellness</td>
-                                    <td>$120.00</td>
-                                    <td><span class="badge bg-secondary">Inactive</span></td>
-                                    <td>Feb 28, 2024</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
-                                            <a href="#" class="btn btn-sm btn-outline-success">Activate</a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
-                    </div>
-                    
-                    <!-- Show this when no services are found -->
-                    <div class="text-center py-5" style="display: none;">
-                        <i class="fas fa-store fa-3x text-muted mb-3"></i>
-                        <h4>No services found</h4>
-                        <p class="text-muted">You haven't added any services yet.</p>
-                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addServiceModal">Add Your First Service</a>
                     </div>
                 </div>
             </div>
@@ -107,23 +92,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addServiceForm" action="{{ route('business.services.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="addServiceForm" action="{{ route('business.services.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="service_name" class="form-label">Service Name</label>
-                        <input type="text" class="form-control" id="service_name" name="service_name" required>
+                        <label for="name" class="form-label">Service Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-select" id="category" name="category" required>
+                        <label for="category_id" class="form-label">Category</label>
+                        <select class="form-select" id="category_id" name="category_id" required>
                             <option value="">Select a category</option>
-                            <option value="Eco-Friendly">Eco-Friendly</option>
-                            <option value="Sustainable">Sustainable</option>
-                            <option value="Health & Wellness">Health & Wellness</option>
-                            <option value="Organic">Organic</option>
-                            <option value="Fitness">Fitness</option>
-                            <option value="Nutrition">Nutrition</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     
@@ -148,17 +130,6 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="service_image" class="form-label">Service Image</label>
-                        <select class="form-select" id="service_image" name="image">
-                            <option value="">Select an image</option>
-                            <option value="yoga.png">Yoga</option>
-                            <option value="meal.png">Healthy Meal</option>
-                            <option value="gardening.png">Gardening</option>
-                            <option value="forest.png">Forest</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
                             <label class="form-check-label" for="is_active">
@@ -177,6 +148,21 @@
 </div>
 
 <style>
+    .service-icon-container {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, rgba(239, 35, 60, 0.1), rgba(239, 35, 60, 0.05));
+        border-radius: 8px;
+    }
+    
+    .service-icon {
+        font-size: 1.5rem;
+        color: var(--accent);
+    }
+    
     .badge {
         padding: 0.5em 0.75em;
         font-weight: 500;

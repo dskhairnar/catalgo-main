@@ -35,7 +35,7 @@ class BusinessBookingController extends Controller
             $query->where('business_id', $business->id);
         })->with(['user', 'service'])->latest()->get();
 
-        return view('business.bookings.index', compact('bookings'));
+        return view('business.bookings', compact('bookings'));
     }
 
     /**

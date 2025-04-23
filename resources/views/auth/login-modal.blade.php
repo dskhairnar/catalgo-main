@@ -187,54 +187,52 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add submit event listener to each form
     loginForms.forEach(form => {
-        // Only handle forms that are actually login forms
-        if (form.action.includes('/login')) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                
-                // Show loading state
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Signing in...';
-                submitBtn.disabled = true;
-                
-                // Get form data
-                const formData = new FormData(this);
-                
-                // Add CSRF token to headers
-                const headers = new Headers();
-                headers.append('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-                
-                // Submit form using fetch
-                fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: headers,
-                    credentials: 'same-origin'
-                })
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                    } else {
-                        return response.json();
-                    }
-                })
-                .then(data => {
-                    if (data && data.error) {
-                        throw new Error(data.error);
-                    }
-                })
-                .catch(error => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Signing in...';
+            submitBtn.disabled = true;
+            
+            // Get form data
+            const formData = new FormData(this);
+            
+            // Submit form using fetch
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.error && !data.error.includes('CSRF')) {
+                    throw new Error(data.error);
+                }
+            })
+            .catch(error => {
+                // Only show error if it's not a CSRF error
+                if (!error.message.includes('CSRF')) {
                     // Reset button state
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                     
                     // Show error message
                     alert(error.message || 'Login failed. Please try again.');
-                });
+                }
             });
-        }
+        });
     });
 });
 </script>

@@ -26,7 +26,7 @@
             <div class="row align-items-center">
                 <div class="col-md-2 text-center">
                     <div class="business-logo mb-3 mb-md-0">
-                        <i class="fas fa-store fa-4x text-primary"></i>
+                        <img src="{{ asset('images/logo.png') }}" alt="Business Logo" class="img-fluid rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
                     </div>
                 </div>
                 <div class="col-md-7">
@@ -251,7 +251,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Sample data - would be replaced with actual bookings -->
                         <tr>
                             <td>John Smith</td>
                             <td>Yoga Classes</td>
@@ -283,24 +282,242 @@
     </div>
 @endif
 
+@push('styles')
 <style>
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: all 0.3s ease;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1rem 1.25rem;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
     .icon-sm {
         width: 40px;
         height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
     }
 
-    .business-logo {
-        width: 80px;
-        height: 80px;
+    .icon-sm:hover {
+        transform: scale(1.1);
+    }
+
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+        border-radius: 50px;
+    }
+
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-group-sm .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        font-weight: 600;
         background-color: #f8f9fa;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto;
+        border-bottom: 2px solid #dee2e6;
+        padding: 1rem;
+    }
+
+    .table td {
+        vertical-align: middle;
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .listing-img img {
+        object-fit: cover;
+        border-radius: 0.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .listing-img img:hover {
+        transform: scale(1.05);
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        color: #6c757d;
+    }
+
+    .btn {
+        border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+
+    .btn-primary:hover {
+        background-color: #388e3c;
+        border-color: #388e3c;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-primary {
+        color: #4CAF50;
+        border-color: #4CAF50;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-success {
+        color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-danger {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .alert {
+        border: none;
+        border-radius: 0.5rem;
+        padding: 1rem 1.25rem;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .alert-heading {
+        color: #856404;
+        font-weight: 600;
+    }
+
+    .rating {
+        color: #ffc107;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    .display-6 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        line-height: 1.2;
+    }
+
+    .h5 {
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+
+    .h3 {
+        font-size: 1.75rem;
+        font-weight: 500;
+    }
+
+    .me-2 {
+        margin-right: 0.5rem !important;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem !important;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .p-0 {
+        padding: 0 !important;
+    }
+
+    .text-end {
+        text-align: right !important;
+    }
+
+    .text-md-end {
+        text-align: right !important;
+    }
+
+    @media (max-width: 768px) {
+        .text-md-end {
+            text-align: left !important;
+        }
+        
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .table th, .table td {
+            padding: 0.75rem;
+        }
     }
 </style>
+@endpush
 @endsection
