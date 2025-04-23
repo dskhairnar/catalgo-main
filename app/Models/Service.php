@@ -21,6 +21,7 @@ class Service extends Model
         'duration',
         'business_id',
         'category_id',
+        'image',
     ];
 
     /**

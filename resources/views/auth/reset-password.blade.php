@@ -73,7 +73,7 @@ document.getElementById('resetPasswordForm').addEventListener('submit', async fu
 
     try {
         const response = await fetch(form.action, {
-            method: 'POST',
+            method: 'PUT',
             body: formData,
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content

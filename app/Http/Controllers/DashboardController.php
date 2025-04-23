@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User;
+use App\Models\Booking;
 
 class DashboardController extends Controller
 {
@@ -69,7 +70,6 @@ class DashboardController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->password = Hash::make($validated['password']);
         $user->save();
@@ -97,5 +97,29 @@ class DashboardController extends Controller
         $user = Auth::user();
         $savedServices = $user->savedServices()->with(['service'])->latest()->get();
         return view('dashboard.saved', compact('savedServices'));
+    }
+
+    public function storeBooking(Request $request)
+    {
+        $validated = $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'booking_date' => 'required|date|after_or_equal:today',
+            'booking_time' => 'required|date_format:H:i',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $booking = new Booking([
+            'service_id' => $validated['service_id'],
+            'user_id' => auth()->id(),
+            'booking_date' => $validated['booking_date'],
+            'booking_time' => $validated['booking_time'],
+            'notes' => $validated['notes'],
+            'status' => 'pending'
+        ]);
+
+        $booking->save();
+
+        return redirect()->route('bookings')
+            ->with('success', 'Booking request submitted successfully!');
     }
 }

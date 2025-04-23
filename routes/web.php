@@ -17,6 +17,7 @@ use App\Http\Controllers\Business\ServiceController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
+Route::get('/services/{service}', [HomeController::class, 'showService'])->name('service.details');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 // Authentication Routes
@@ -27,7 +28,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
     Route::put('/profile/update', [DashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/password/update', [DashboardController::class, 'updatePassword'])->name('profile.password.update');
     Route::get('/bookings', [DashboardController::class, 'bookings'])->name('bookings');
+    Route::post('/bookings', [DashboardController::class, 'storeBooking'])->name('bookings.store');
     Route::get('/saved', [DashboardController::class, 'saved'])->name('saved');
 });
 

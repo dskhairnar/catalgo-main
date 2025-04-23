@@ -149,7 +149,13 @@
                     
                     <div class="mb-3">
                         <label for="service_image" class="form-label">Service Image</label>
-                        <input type="file" class="form-control" id="service_image" name="service_image">
+                        <select class="form-select" id="service_image" name="image">
+                            <option value="">Select an image</option>
+                            <option value="yoga.png">Yoga</option>
+                            <option value="meal.png">Healthy Meal</option>
+                            <option value="gardening.png">Gardening</option>
+                            <option value="forest.png">Forest</option>
+                        </select>
                     </div>
                     
                     <div class="mb-3">

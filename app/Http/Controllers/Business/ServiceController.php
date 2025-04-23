@@ -49,13 +49,12 @@ class ServiceController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|string|in:yoga.png,meal.png,gardening.png,forest.png',
         ]);
         
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('services', 'public');
-            $validated['image'] = $imagePath;
+        // Handle image
+        if ($request->has('image')) {
+            $validated['image'] = $request->image;
         }
         
         // Create service

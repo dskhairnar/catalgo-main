@@ -507,25 +507,29 @@
 <nav class="navbar">
     <a href="/" class="logo">Healthy Habitat Network</a>
     <div class="nav-links">
-        <a href="/dashboard">Services</a>
-        <a href="/reports">Categories</a>
-        <a href="/settings">About Us</a>
-        <a href="javascript:void(0)" onclick="showLoginModal()" class="login-btn">Log in</a>
+        <a href="#featured-services">Services</a>
+        <a href="#categories">Categories</a>
+        <a href="#about-section">About Us</a>
+        @auth
+            <a href="javascript:void(0)" onclick="handleLogout()" class="login-btn">Logout</a>
+        @else
+            <a href="javascript:void(0)" onclick="showLoginModal()" class="login-btn">Log in</a>
+        @endauth
     </div>
 </nav>
 
 <main class="main-content">
     <div class="content-left">
-        <h1 class="main-title">Connecting you to a healthier lifestyle</h1>
-        <p class="main-description">Discover a range of services and products that support your wellness journey and help you build sustainable, healthy habits.</p>
-        <a href="/explore" class="explore-btn">Explore Services</a>
+        <h1 class="main-title">Discover Sustainable Living</h1>
+        <p class="main-description">Explore eco-friendly services and sustainable solutions for a better tomorrow.</p>
+        <a href="#services" class="explore-btn">Explore Services</a>
     </div>
     <div class="content-right">
         <img src="{{ asset('images/forest.png') }}" alt="Healthy Living" class="hero-image">
     </div>
 </main>
 
-<section class="categories">
+<section class="categories" id ="categories">
     <h2 class="categories-title">Explore Our Categories</h2>
     <div class="categories-grid">
         <div class="category-card">
@@ -547,7 +551,7 @@
     </div>
 </section>
 
-<section class="about-section">
+<section class="about-section"  id="about-section">
     <h2>About Us</h2>
     <p>Healthy Habitat Network is dedicated to promoting wellness and sustainability. We connect individuals with quality services and products that foster a healthier, more sustainable lifestyle. Join our community and start your wellness journey today.</p>
     <div class="search-bar">
@@ -556,7 +560,7 @@
     </div>
 </section>
 
-<section class="featured-services">
+<section id="services" class="featured-services">
     <h2>Featured Services</h2>
     <div class="services-grid">
         @foreach($services as $service)
@@ -581,4 +585,41 @@
 
 @push('scripts')
 <script src="{{ asset('js/auth-modals.js') }}"></script>
+<script>
+function handleLogout() {
+    // Create a form and submit it to handle the logout
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("logout") }}';
+    
+    // Add CSRF token
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+    
+    // Add the form to the document and submit it
+    document.body.appendChild(form);
+    form.submit();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
 @endpush

@@ -5,26 +5,26 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo-container">
-            <img src="{{ asset('/public/images/forest.png') }}" alt="Healthy Habitat Network" class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="Healthy Habitat Network" class="logo">
             <h1>Healthy Habitat Network</h1>
         </div>
         
         <nav class="sidebar-nav">
-            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
             </a>
-            <a href="{{ route('about') }}" class="nav-item {{ request()->routeIs('about') ? 'active' : '' }}">
-                <i class="fas fa-info-circle"></i>
-                <span>About</span>
+            <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="{{ route('bookings') }}" class="nav-item {{ request()->routeIs('bookings') ? 'active' : '' }}">
+                <i class="fas fa-calendar-check"></i>
+                <span>My Bookings</span>
             </a>
             <a href="{{ route('services') }}" class="nav-item {{ request()->routeIs('services') ? 'active' : '' }}">
-                <i class="fas fa-th"></i>
+                <i class="fas fa-leaf"></i>
                 <span>Services</span>
-            </a>
-            <a href="{{ route('contact') }}" class="nav-item {{ request()->routeIs('contact') ? 'active' : '' }}">
-                <i class="fas fa-envelope"></i>
-                <span>Contact</span>
             </a>
         </nav>
     </div>
@@ -33,10 +33,18 @@
     <div class="main-content">
         <!-- Header -->
         <header class="dashboard-header">
-            <h1>Welcome, {{ Auth::user()->name }}!</h1>
+            <div class="header-content">
+                <h1>Welcome back, {{ Auth::user()->name }}! 👋</h1>
+                <p class="welcome-message">Here's what's happening with your account today.</p>
+            </div>
             <div class="user-profile">
-                <span class="user-initial">{{ substr(Auth::user()->name, 0, 1) }}.</span>
-                <span class="user-name">{{ Auth::user()->name }}</span>
+                <div class="user-avatar">
+                    <span class="user-initial">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">{{ Auth::user()->name }}</span>
+                    <span class="user-email">{{ Auth::user()->email }}</span>
+                </div>
             </div>
         </header>
 
@@ -47,9 +55,14 @@
                 <div class="card-icon booking-icon">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-                <h2>My Bookings</h2>
-                <p>View and manage your service bookings</p>
-                <a href="{{ route('bookings') }}" class="card-link">View Bookings</a>
+                <div class="card-content">
+                    <h2>My Bookings</h2>
+                    <p>View and manage your service bookings</p>
+                    <a href="{{ route('bookings') }}" class="card-link">
+                        View Bookings
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- Explore Services Card -->
@@ -57,9 +70,14 @@
                 <div class="card-icon service-icon">
                     <i class="fas fa-leaf"></i>
                 </div>
-                <h2>Explore Services</h2>
-                <p>Discover eco-friendly and sustainable services</p>
-                <a href="{{ route('services') }}" class="card-link">Browse Services</a>
+                <div class="card-content">
+                    <h2>Explore Services</h2>
+                    <p>Discover eco-friendly and sustainable services</p>
+                    <a href="{{ route('services') }}" class="card-link">
+                        Browse Services
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- My Profile Card -->
@@ -67,9 +85,14 @@
                 <div class="card-icon profile-icon">
                     <i class="fas fa-user"></i>
                 </div>
-                <h2>My Profile</h2>
-                <p>Update your personal information</p>
-                <a href="{{ route('profile') }}" class="card-link">Edit Profile</a>
+                <div class="card-content">
+                    <h2>My Profile</h2>
+                    <p>Update your personal information</p>
+                    <a href="{{ route('profile') }}" class="card-link">
+                        Edit Profile
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- Recent Activity Card -->
@@ -77,8 +100,14 @@
                 <div class="card-icon activity-icon">
                     <i class="fas fa-clock"></i>
                 </div>
-                <h2>Recent Activity</h2>
-                <p>No recent activity to display</p>
+                <div class="card-content">
+                    <h2>Recent Activity</h2>
+                    <p>No recent activity to display</p>
+                    <div class="activity-placeholder">
+                        <i class="fas fa-history"></i>
+                        <span>Your activity will appear here</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -90,7 +119,7 @@
     .dashboard-container {
         display: flex;
         min-height: 100vh;
-        background-color: #fafafa;
+        background-color: #f8f9fa;
     }
 
     /* Sidebar Styles */
@@ -99,24 +128,35 @@
         background-color: #ffffff;
         padding: 2rem;
         box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
     }
 
     .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+        text-align: center;
         margin-bottom: 2rem;
+        padding: 1rem;
+        border-radius: 12px;
+        background-color: #f8f9fa;
     }
 
     .logo {
-        width: 40px;
-        height: 40px;
+        width: 80px;
+        height: auto;
+        margin-bottom: 1rem;
+        transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+        transform: scale(1.05);
     }
 
     .logo-container h1 {
         font-size: 1.2rem;
         color: #2d3436;
         margin: 0;
+        font-weight: 600;
     }
 
     .sidebar-nav {
@@ -128,22 +168,35 @@
     .nav-item {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        padding: 0.75rem 1rem;
+        padding: 1rem;
         color: #636e72;
         text-decoration: none;
         border-radius: 12px;
         transition: all 0.3s ease;
+        font-weight: 500;
     }
 
-    .nav-item:hover, .nav-item.active {
-        background-color: #f1f2f6;
+    .nav-item i {
+        width: 24px;
+        margin-right: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .nav-item:hover {
+        background-color: #f1f3f5;
         color: #2d3436;
+        transform: translateX(5px);
+    }
+
+    .nav-item.active {
+        background-color: #4CAF50;
+        color: white;
     }
 
     /* Main Content Styles */
     .main-content {
         flex: 1;
+        margin-left: 280px;
         padding: 2rem;
     }
 
@@ -152,11 +205,20 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        padding: 1.5rem;
+        background-color: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
 
-    .dashboard-header h1 {
-        font-size: 2rem;
+    .header-content h1 {
+        font-size: 1.8rem;
         color: #2d3436;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .welcome-message {
+        color: #636e72;
         margin: 0;
     }
 
@@ -164,18 +226,40 @@
         display: flex;
         align-items: center;
         gap: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 12px;
     }
 
-    .user-initial {
-        width: 40px;
-        height: 40px;
-        background-color: #2d3436;
-        color: #ffffff;
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        background-color: #4CAF50;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: bold;
+    }
+
+    .user-initial {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-weight: 500;
+        color: #2d3436;
+    }
+
+    .user-email {
+        font-size: 0.9rem;
+        color: #636e72;
     }
 
     /* Dashboard Grid */
@@ -190,7 +274,10 @@
         border-radius: 16px;
         padding: 2rem;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: all 0.3s ease;
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
     }
 
     .dashboard-card:hover {
@@ -199,14 +286,14 @@
     }
 
     .card-icon {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 1rem;
         font-size: 1.5rem;
+        flex-shrink: 0;
     }
 
     .booking-icon {
@@ -229,37 +316,88 @@
         color: #8e24aa;
     }
 
+    .card-content {
+        flex: 1;
+    }
+
     .dashboard-card h2 {
         font-size: 1.25rem;
         color: #2d3436;
         margin: 0 0 0.5rem 0;
+        font-weight: 600;
     }
 
     .dashboard-card p {
         color: #636e72;
         margin: 0 0 1.5rem 0;
+        line-height: 1.5;
     }
 
     .card-link {
-        color: #2d3436;
+        color: #4CAF50;
         text-decoration: none;
         font-weight: 500;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        transition: all 0.3s ease;
     }
 
     .card-link:hover {
-        color: #1976d2;
+        color: #388e3c;
+        gap: 0.75rem;
     }
 
-    .card-link::after {
-        content: '→';
-        transition: transform 0.3s ease;
+    .activity-placeholder {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #636e72;
+        font-size: 0.9rem;
     }
 
-    .card-link:hover::after {
-        transform: translateX(5px);
+    .activity-placeholder i {
+        font-size: 1.2rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+
+        .main-content {
+            margin-left: 0;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .user-profile {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .dashboard-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card-icon {
+            margin-bottom: 1rem;
+        }
     }
 </style>
 @endpush

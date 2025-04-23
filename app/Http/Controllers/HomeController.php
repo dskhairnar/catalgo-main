@@ -69,6 +69,7 @@ class HomeController extends Controller
      */
     public function showService(Service $service)
     {
+        $service->load(['category', 'business']);
         return view('service-details', compact('service'));
     }
 }
